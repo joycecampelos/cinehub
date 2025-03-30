@@ -6,27 +6,24 @@ import { useFetchFavorites } from "../hooks/useFetchFavorites";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from "axios";
-const BASE_URL = "http://localhost:5000/api"
+const BASE_URL = "http://localhost:5000/api";
 export default function Favorites() {
-
-
-  const { data: favoriteMoviesData, loading: loadingFavorites } = useFetchFavorites();
+  const { data: favoriteMoviesData, loading: loadingFavorites } =
+    useFetchFavorites();
 
   const [movies, setMovies] = useState([]);
   const filteredMovies = new Set(movies.map((movie) => movie.id));
   const fetchMovies = () => {
     if (favoriteMoviesData && favoriteMoviesData.length > 0) {
-
       favoriteMoviesData.forEach(async (movieId) => {
         if (filteredMovies.has(movieId)) {
           return;
         }
         filteredMovies.add(movieId);
-        
-        await axios
-          .get(`${ BASE_URL }/movies/movie/${ movieId }`)
-          .then((res) => {
 
+        await axios
+          .get(`${BASE_URL}/movies/movie/${movieId}`)
+          .then((res) => {
             setMovies((prevMovies) => [...prevMovies, res.data]);
           })
           .catch((error) => {
@@ -40,44 +37,54 @@ export default function Favorites() {
     fetchMovies();
   }, [favoriteMoviesData]);
 
-
- 
   const handleFavorite = async (movieId, acao) => {
     try {
-
-      const uid_usuario = localStorage.getItem('user');
-      await axios.post('http://localhost:5000/api/movies/favoritar', { movieId, uid_usuario, acao }, {
-        headers: {
-          Authorization: `Bearer ${ localStorage.getItem('token') }`,
-        },
-      });
-      console.log('Filme favoritado com sucesso!');
+      const uid_usuario = localStorage.getItem("user");
+      await axios.post(
+        "http://localhost:5000/api/movies/favoritar",
+        { movieId, uid_usuario, acao },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("Filme favoritado com sucesso!");
       window.location.reload();
-
     } catch (error) {
       console.log("error ==> ", error);
-      console.error('Error signing up', error.response.data.error);
+      console.error("Error signing up", error.response.data.error);
     }
-
-  }
-
-
+  };
 
   return (
     <>
-      <Header>
-        <div className="container mx-auto px-10">
+      <div>
+        <Header />
+        <div className="w-full h-full mx-auto my-8 p-8 bg-white rounded-md">
+          <h1 className="text-2xl text-center font-bold text-gray-800">
+            Meus Favoritos
+          </h1>
+          {movies.length === 0 && !loadingFavorites && (
+            <p className="text-gray-500 text-center">
+              Você ainda não tem filmes favoritos. <br /> Faça o login e
+              adicione filmes à lista.
+            </p>
+          )}
         </div>
-      </Header><div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6">
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6">
         {movies.map((movie) => (
           <Link
-            to={`/movie/${ movie.id }`}
+            to={`/movie/${movie.id}`}
             key={movie.id}
             className="movie-card bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 flex flex-col"
           >
             <img
-              src={`https://image.tmdb.org/t/p/w300${ movie.poster_path }`}
-              alt={movie.title} />
+              src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+              alt={movie.title}
+            />
             <div className="p-4 flex flex-col justify-between h-full">
               <h3 className="text-lg font-semibold text-gray-800 truncate">
                 {movie.title}
@@ -85,7 +92,8 @@ export default function Favorites() {
             </div>
 
             <div>
-              {favoriteMoviesData && favoriteMoviesData.includes(movie.id.toString()) ? (
+              {favoriteMoviesData &&
+              favoriteMoviesData.includes(movie.id.toString()) ? (
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -107,10 +115,10 @@ export default function Favorites() {
                 </button>
               )}
             </div>
-
           </Link>
         ))}
       </div>
+      <Footer />
     </>
   );
 }
