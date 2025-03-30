@@ -23,6 +23,28 @@ export default function MovieDetails() {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const isLoggedIn = localStorage.getItem("user") !== null;
+  const listaFilmes = JSON.parse(localStorage.getItem("filmesFavoritos"));
+
+  const handleFavorite = async (movieId, acao) => {
+    try {
+      const uid_usuario = localStorage.getItem("user");
+      await axios.post(
+        "http://localhost:5000/api/movies/favoritar",
+        { movieId, uid_usuario, acao },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("Filme favoritado com sucesso!");
+    } catch (error) {
+      console.log("error ==> ", error);
+      console.error("Error signing up", error.response.data.error);
+    }
+  };
+
   useEffect(() => {
     axios
       .get(`${BASE_URL}/movies/movie/${id}`)
@@ -76,12 +98,43 @@ export default function MovieDetails() {
           />
         </div>
 
-        {/* Detalhes do filme */}
         <div className="lg:w-2/3">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {movie.title}
           </h1>
           <p className="text-xl text-gray-600 italic mb-6">{movie.tagline}</p>
+
+          {isLoggedIn && (
+            <div>
+              {listaFilmes && listaFilmes.includes(movie.id.toString()) ? (
+                <button
+                  onClick={() => {
+                    handleFavorite(movie.id, "desfavoritar");
+                    localStorage.setItem(
+                      "filmesFavoritos",
+                      listaFilmes.filter((id) => id !== movie.id)
+                    );
+                  }}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200 mb-4 flex items-center space-x-2"
+                >
+                  <span>Desfavoritar</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    handleFavorite(movie.id, "favoritar");
+                    localStorage.setItem(
+                      "filmesFavoritos",
+                      listaFilmes.push(movie.id)
+                    );
+                  }}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200 mb-4 flex items-center space-x-2"
+                >
+                  <span>Favoritar</span>
+                </button>
+              )}
+            </div>
+          )}
 
           {movie.overview && (
             <div className="mb-6">

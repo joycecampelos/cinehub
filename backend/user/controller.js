@@ -37,8 +37,11 @@ exports.login = async (req, res) => {
 
          const response = await service.login(email, password);
          const {token, userId} = response;
+
+         const filmesFavoritos = await service.getFavoritos(userId);
        
-        res.json({ userId: userId, token : token , message: "Login realizado com sucesso" });
+
+        res.json({ userId: userId, token : token , filmesFavoritos: filmesFavoritos, message: "Login realizado com sucesso" });
 
     } catch (error) {
         res.status(401).json({ error: error.message });

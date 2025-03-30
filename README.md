@@ -47,6 +47,13 @@ Utilize o arquivo .env-example como referência.
 
 ```
 TMDB_API_KEY=
+PORT=5000
+SUPABASE_KEY=
+DB_PASS=
+DATABASE_URL=
+
+Informações no Canva.
+
 ```
 
 ## Passo 4: Rodar o Projeto

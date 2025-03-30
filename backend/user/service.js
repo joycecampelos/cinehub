@@ -57,3 +57,26 @@ exports.login = async (email, password) => {
         }
     });
 }
+
+
+exports.getFavoritos = async (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { data, error } = await supabase
+                .from('tbl_filmesFavoritados')
+                .select('*')
+                .eq('uid_usuario', userId)
+                .single();
+            if (error) {
+                console.error('Error fetching favoritos:', error.message);
+                throw new Error(error.message)
+                reject(error)
+
+            } else {
+                resolve(data.uid_filme)
+            }
+        } catch (error) {
+            reject(error);
+        }
+    });
+}

@@ -40,6 +40,7 @@ exports.searchMovies = async (req, res) => {
         res.status(500).json({ error: "Erro ao buscar filmes" });
     }
 }
+
 exports.moviesGenres = async (req, res) => {
     try {
         
@@ -50,3 +51,34 @@ exports.moviesGenres = async (req, res) => {
         res.status(500).json({ error: "Erro ao buscar filmes" });
     }
 }
+
+exports.favoriteMovie = async (req, res) => {
+    try {
+        const {movieId, uid_usuario, acao} = req.body; 
+        let response = null;
+        if(acao == "favoritar"){ 
+            response = await service.favoriteMovie(movieId, uid_usuario);
+
+        } else if(acao == "desfavoritar"){
+            response = await service.desfavoritarMovie(movieId, uid_usuario);
+        }
+
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao buscar filmes" });
+    }
+
+}
+exports.getFavoritos = async (req, res) => {
+    try {
+        const {uid_usuario} = req.body; 
+
+        const favoritos = await service.getFavoritos(uid_usuario);
+
+        res.json(favoritos);
+    } catch (error) {
+    console.log("error ==> ", error);
+        res.status(500).json({ error: "Erro ao buscar filmes" });
+    }
+}
+
