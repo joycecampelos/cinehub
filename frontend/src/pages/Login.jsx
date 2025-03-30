@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useMoviesContext } from '../context/MoviesContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(''); 
+    const { setFavoriteMovies } = useMoviesContext();
 
     const navigate = useNavigate();
 
@@ -18,7 +20,10 @@ const Login = () => {
             console.log("res.data ==> ", res.data);
             localStorage.setItem('user', res.data.userId);
             localStorage.setItem('token', res.data.token);
+            setFavoriteMovies(res.data.filmesFavoritos); 
             
+
+
             navigate('/');	
 
         }).catch((err) => {

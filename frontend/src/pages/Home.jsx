@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFetchMovies } from "../hooks/useFetchMovies";
+import { useFetchFavorites } from "../hooks/useFetchFavorites";
 import { useSearchMovies } from "../hooks/useSearchMovies";
 import { useGenres } from "../hooks/useGenres";
 import { useMoviesContext } from "../context/MoviesContext";
@@ -8,6 +9,7 @@ import { useMoviesContext } from "../context/MoviesContext";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
+import axios from 'axios';
 export default function Home() {
   const {
     searchQuery,
@@ -18,6 +20,7 @@ export default function Home() {
     setSelectedGenre,
     currentPage,
     setCurrentPage,
+
   } = useMoviesContext();
 
   const { data: moviesFromFetch, loading: loadingFetch } =
@@ -27,12 +30,36 @@ export default function Home() {
     currentPage
   );
 
+  const { data: favoriteMoviesData, loading: loadingFavorites } = useFetchFavorites();
+
+
   const genres = useGenres();
+
+  const isLoggedIn = localStorage.getItem("user") !== null;
 
   const handleSearchSubmit = () => {
     setSubmittedQuery(searchQuery);
     setCurrentPage(1); // Reset to page 1 after a new search
   };
+
+  const handleFavorite = async (movieId, acao) => {
+    try {
+
+      const uid_usuario = localStorage.getItem('user');
+      await axios.post('http://localhost:5000/api/movies/favoritar', { movieId, uid_usuario, acao }, {
+        headers: {
+          Authorization: `Bearer ${ localStorage.getItem('token') }`,
+        },
+      });
+      console.log('Filme favoritado com sucesso!');
+      window.location.reload(); 
+      
+    } catch (error) {
+      console.log("error ==> ", error);
+      console.error('Error signing up', error.response.data.error);
+    }
+
+  }
 
   const handleGenreChange = (e) => {
     setSelectedGenre(e.target.value);
@@ -110,20 +137,48 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6">
           {filteredMovies.map((movie) => (
             <Link
-              to={`/movie/${movie.id}`}
+              to={`/movie/${ movie.id }`}
               key={movie.id}
               className="movie-card bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 flex flex-col"
             >
               <img
-                src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+                src={`https://image.tmdb.org/t/p/w300${ movie.poster_path }`}
                 alt={movie.title}
-                className="w-full h-100 object-cover rounded-t-lg" // Imagem proporcional com borda arredondada no topo
+              // Imagem proporcional com borda arredondada no topo
               />
               <div className="p-4 flex flex-col justify-between h-full">
                 <h3 className="text-lg font-semibold text-gray-800 truncate">
                   {movie.title}
                 </h3>
               </div>
+              {isLoggedIn && (
+                <div>
+                  {favoriteMoviesData && favoriteMoviesData.includes(movie.id.toString()) ? (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleFavorite(movie.id, "desfavoritar");
+                      }}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200 mb-4 flex items-center space-x-2"
+                    >
+                      <span>Desfavoritar</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleFavorite(movie.id, "favoritar");
+                      }}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200 mb-4 flex items-center space-x-2"
+                    >
+                      <span>Favoritar</span>
+                    </button>
+                  )}
+                </div>
+
+
+
+              )}
             </Link>
           ))}
         </div>
