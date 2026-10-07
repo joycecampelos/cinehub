@@ -19,8 +19,8 @@ Backend:
 ## Passo 1: Clonar o Repositório
 Primeiro, clone este repositório para sua máquina local:
 
-``git clone --LINK DO REPOSITORIO FINAL --``
-``cd cinehub-react``
+``git clone https://github.com/joycecampelos/cinehub``
+``cd cinehub``
 
 ## Passo 2: Instalar Dependências
 Instale as dependências tanto para o frontend quanto para o backend.
@@ -51,9 +51,6 @@ PORT=5000
 SUPABASE_KEY=
 DB_PASS=
 DATABASE_URL=
-
-Informações no Canva.
-
 ```
 
 ## Passo 4: Rodar o Projeto
