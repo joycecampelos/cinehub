@@ -1,15 +1,13 @@
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useFetchMovies } from "../hooks/useFetchMovies";
 import { useFetchFavorites } from "../hooks/useFetchFavorites";
 import { useSearchMovies } from "../hooks/useSearchMovies";
 import { useGenres } from "../hooks/useGenres";
 import { useMoviesContext } from "../context/MoviesContext";
-
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
 import axios from 'axios';
+
 export default function Home() {
   const {
     searchQuery,
@@ -32,7 +30,6 @@ export default function Home() {
 
   const { data: favoriteMoviesData, loading: loadingFavorites } = useFetchFavorites();
 
-
   const genres = useGenres();
 
   const isLoggedIn = localStorage.getItem("user") !== null;
@@ -48,12 +45,12 @@ export default function Home() {
       const uid_usuario = localStorage.getItem('user');
       await axios.post('http://localhost:5000/api/movies/favoritar', { movieId, uid_usuario, acao }, {
         headers: {
-          Authorization: `Bearer ${ localStorage.getItem('token') }`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       console.log('Filme favoritado com sucesso!');
-      window.location.reload(); 
-      
+      window.location.reload();
+
     } catch (error) {
       console.log("error ==> ", error);
       console.error('Error signing up', error.response.data.error);
@@ -137,12 +134,12 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-6">
           {filteredMovies.map((movie) => (
             <Link
-              to={`/movie/${ movie.id }`}
+              to={`/movie/${movie.id}`}
               key={movie.id}
               className="movie-card bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 flex flex-col"
             >
               <img
-                src={`https://image.tmdb.org/t/p/w300${ movie.poster_path }`}
+                src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
                 alt={movie.title}
               // Imagem proporcional com borda arredondada no topo
               />
@@ -175,9 +172,6 @@ export default function Home() {
                     </button>
                   )}
                 </div>
-
-
-
               )}
             </Link>
           ))}

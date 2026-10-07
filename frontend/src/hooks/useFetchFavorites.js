@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+
 export function useFetchFavorites(page = 1) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +11,7 @@ export function useFetchFavorites(page = 1) {
     setLoading(true);
     const fetchFavorites = async () => {
       try {
-        const response = await axios.post( `http://localhost:5000/api/movies/getFavoritos`, {uid_usuario});
+        const response = await axios.post(`http://localhost:5000/api/movies/getFavoritos`, { uid_usuario });
         setData(response.data);
       } catch (error) {
         console.error("Erro ao buscar filmes:", error);

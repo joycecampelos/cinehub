@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faSpinner } from "@fortawesome/free-solid-svg-icons";
 
@@ -130,11 +128,10 @@ export default function MovieDetails() {
                       : "favoritar"
                   )
                 }
-                className={`px-5 py-3 rounded-lg text-white transition duration-300 mb-4 flex items-center justify-center ${
-                  listaFilmes.includes(movie.id.toString())
+                className={`px-5 py-3 rounded-lg text-white transition duration-300 mb-4 flex items-center justify-center ${listaFilmes.includes(movie.id.toString())
                     ? "bg-red-500 hover:bg-red-600"
                     : "bg-blue-500 hover:bg-blue-600"
-                }`}
+                  }`}
               >
                 {listaFilmes.includes(movie.id.toString())
                   ? "Desfavoritar"

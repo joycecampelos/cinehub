@@ -1,12 +1,12 @@
-// src/pages/Favorites.js
-import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFetchFavorites } from "../hooks/useFetchFavorites";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import axios from "axios";
+
 const BASE_URL = "http://localhost:5000/api";
+
 export default function Favorites() {
   const { data: favoriteMoviesData, loading: loadingFavorites } =
     useFetchFavorites();
@@ -93,7 +93,7 @@ export default function Favorites() {
 
             <div>
               {favoriteMoviesData &&
-              favoriteMoviesData.includes(movie.id.toString()) ? (
+                favoriteMoviesData.includes(movie.id.toString()) ? (
                 <button
                   onClick={(e) => {
                     e.preventDefault();

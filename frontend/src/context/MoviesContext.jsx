@@ -16,7 +16,7 @@ export const MoviesProvider = ({ children }) => {
     selectedGenre,
     setSelectedGenre,
     currentPage,
-    setCurrentPage,  
+    setCurrentPage,
   };
 
   return (
